@@ -39,10 +39,63 @@
             {{ task.text }}
             <button
               v-bind:title="message"
-              class="btn btn-danger btn-sm float-right delete"
+              data-toggle="modal"
+              data-target="#todoModal"
+              class="btn btn-danger btn-sm float-right  delete"
             >
-              X
+              <i class="fa fa-trash"></i>
             </button>
+              <!-- Modal -->
+            <div
+              class="modal fade"
+              id="todoModal"
+              tabindex="-1"
+              aria-labelledby="todoModalLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="todoModalLabel">Delete</h5>
+                    <button
+                      type="button"
+                      class="close"
+                      data-dismiss="modal"
+                      aria-label="Close"
+                    >
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    Are you sure you want to do this?
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                    <button type="button" class="btn btn-danger">
+                      confirm
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            
+            <button
+              v-bind:title="message"
+              data-toggle="modal"
+              data-target="#todoModal"
+              class="btn btn-danger btn-sm mr-3 float-right delete"
+            >
+              <i class="fa fa-pencil"></i>
+            </button>
+
+          
           </li>
         </ul>
       </div>
@@ -51,6 +104,7 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
@@ -68,9 +122,15 @@ export default {
   },
   methods: {
     addTodo() {
-      this.items.push({
-        text: this.title,
-      });
+      const payload = {
+        description: this.description,
+        title: this.title,
+      };
+
+      axios.post(
+        "https://vue-todo-30635-default-rtdb.firebaseio.com/todos.json",
+        payload
+      );
     },
   },
 };
