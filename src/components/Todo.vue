@@ -36,9 +36,10 @@
           class="list-group"
         >
           <li class="list-group-item">
-            {{ task.text }}
+            {{ task.title }}
             <button
               v-bind:title="message"
+              @click="getkey(key)"
               data-toggle="modal"
               data-target="#todoModal"
               class="btn btn-danger btn-sm float-right  delete"
@@ -77,7 +78,7 @@
                     >
                       Close
                     </button>
-                    <button type="button" class="btn btn-danger">
+                    <button @click.prevent="deleteTodo" type="button" class="btn btn-danger">
                       confirm
                     </button>
                   </div>
@@ -85,7 +86,7 @@
               </div>
             </div>
 
-            
+
             <button
               v-bind:title="message"
               data-toggle="modal"
@@ -105,19 +106,17 @@
 
 <script>
 import axios from "axios";
+
+
 export default {
   data() {
     return {
       message: "click to remove todo item",
       seen: false,
-      items: [
-        { text: "Take your bath" },
-        { text: "Learn Vue js" },
-        { text: "Take coffee" },
-        { text: "Sleep" },
-      ],
+      items: [],
       title: "",
       description: "",
+      key :""
     };
   },
   methods: {
@@ -128,11 +127,37 @@ export default {
       };
 
       axios.post(
-        "https://vue-todo-30635-default-rtdb.firebaseio.com/todos.json",
+        `${baseUrl}/todos.json`,
         payload
       );
     },
+
+    getkey(key){
+      this.key = key
+    },
+
+    deleteTodo(){
+     
+      const data = Object.keys(this.items).map(key =>{
+        return this.items[key]
+      })
+
+       const index = data.findIndex(todo => console.log(todo))
+      console.log(index)
+
+    }
   },
+
+  mounted(){
+   axios.get(`${baseUrl}/todos.json`)
+   .then(response =>{
+     console.log(response.data)
+     this.items = response.data
+   })
+  
+  
+ }
+
 };
 </script>
 
